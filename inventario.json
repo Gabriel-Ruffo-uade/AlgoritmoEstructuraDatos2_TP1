@@ -1,0 +1,8 @@
+{
+  "paquetes": [
+    { "id": 1, "tipo": "Electronica", "peso": 12.5, "destino": "Cordoba", "urgente": false },
+    { "id": 2, "tipo": "Alimentos", "peso": 8.0, "destino": "Rosario", "urgente": true },
+    { "id": 3, "tipo": "Fragiles", "peso": 65.0, "destino": "Mendoza", "urgente": false },
+    { "id": 4, "tipo": "sarasa", "peso": 10.0, "destino": "que se yo", "urgente": false }
+  ]
+}
