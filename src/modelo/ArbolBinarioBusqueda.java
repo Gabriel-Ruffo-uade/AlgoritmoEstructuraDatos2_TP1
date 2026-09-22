@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-//Armado de logica para el arbol binario balanceado de los depositos.
-//elije el valor medio de los ids y del lado izq van los menores y del derecho los mayores
-//estos valores los obtiene recorriendo la lista de ids de depositos   
+// ABB balanceado: los IDs menores quedan a la izquierda y los mayores a la derecha.
+// Las rotaciones AVL se aplican despues de cada insercion para mantener el balance.
 public class ArbolBinarioBusqueda
 {
     private Deposito raiz;

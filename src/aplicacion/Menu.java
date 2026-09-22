@@ -2,11 +2,11 @@ package aplicacion;
 
 import java.io.IOException;
 import java.util.Scanner;
-import modelo.ArbolBinarioBusqueda;
 import modelo.ListaGenerica;
 import modelo.Paquete;
 import negocio.Camion;
 import negocio.CentroDistribucion;
+import negocio.GestionDepositos;
 import persistencia.PersistenciaDepositosJson;
 import persistencia.PersistenciaJson;
 
@@ -16,17 +16,16 @@ public class Menu
     private ListaGenerica<Paquete<String>> paquetes;
     private Camion camion;
     private PersistenciaJson persistencia;
-    private PersistenciaDepositosJson persistenciaDepositos;
-    private ArbolBinarioBusqueda arbolDepositos;
+    private GestionDepositos gestionDepositos;
     private CentroDistribucion centroDistribucion;
 
     public Menu()
     {
         teclado = new Scanner(System.in);
         persistencia = new PersistenciaJson("inventario.json");
-        persistenciaDepositos = new PersistenciaDepositosJson("depositos.json");
+        gestionDepositos = new GestionDepositos(
+            new PersistenciaDepositosJson("depositos.json"));
         paquetes = new ListaGenerica<>();
-        arbolDepositos = new ArbolBinarioBusqueda();
         centroDistribucion = new CentroDistribucion();
     }
 
@@ -72,9 +71,9 @@ public class Menu
 
         try
         {
-            arbolDepositos = persistenciaDepositos.cargar();
+            gestionDepositos.cargar();
             System.out.println("Depositos cargados desde el JSON: "
-                    + arbolDepositos.obtenerEnOrden().size());
+                + gestionDepositos.cantidad());
         }
         catch (IOException e)
         {
@@ -181,12 +180,10 @@ public class Menu
 
     private void auditarDepositos()
     {
-        arbolDepositos.auditar();
-        arbolDepositos.imprimirPorNiveles();
-
         try
         {
-            persistenciaDepositos.guardar(arbolDepositos);
+            System.out.print(gestionDepositos.auditarYObtenerReporte());
+            gestionDepositos.guardar();
             System.out.println("Auditoria de depositos guardada");
         }
         catch (IOException e)
