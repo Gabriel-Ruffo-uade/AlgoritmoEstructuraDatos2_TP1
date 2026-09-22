@@ -1,0 +1,19 @@
+{
+  "depositos": [
+    { "id": 5, "nombre": "Deposito Villa Mercedes", "auditado": false, "fechaUltimaAuditoria": "2026-09-10T09:30" },
+    { "id": 10, "nombre": "Deposito San Luis", "auditado": false, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 15, "nombre": "Deposito Rio Cuarto", "auditado": true, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 20, "nombre": "Deposito Cordoba", "auditado": true, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 25, "nombre": "Deposito Parana", "auditado": false, "fechaUltimaAuditoria": "2026-09-05T16:00" },
+    { "id": 30, "nombre": "Deposito Santa Fe", "auditado": false, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 35, "nombre": "Deposito Rafaela", "auditado": true, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 50, "nombre": "Hub Central Buenos Aires", "auditado": true, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 60, "nombre": "Deposito San Juan", "auditado": false, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 70, "nombre": "Deposito La Rioja", "auditado": false, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" },
+    { "id": 75, "nombre": "Deposito Catamarca", "auditado": false, "fechaUltimaAuditoria": "2026-08-30T13:00" },
+    { "id": 80, "nombre": "Deposito Rosario", "auditado": true, "fechaUltimaAuditoria": "2026-09-01T09:00" },
+    { "id": 85, "nombre": "Deposito Bariloche", "auditado": false, "fechaUltimaAuditoria": "2026-09-12T15:00" },
+    { "id": 90, "nombre": "Deposito Neuquen", "auditado": true, "fechaUltimaAuditoria": "2026-08-25T14:30" },
+    { "id": 95, "nombre": "Deposito Comodoro", "auditado": true, "fechaUltimaAuditoria": "2026-09-21T23:30:55.082608500" }
+  ]
+}

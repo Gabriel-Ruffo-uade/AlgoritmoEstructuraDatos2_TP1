@@ -2,10 +2,12 @@ package aplicacion;
 
 import java.io.IOException;
 import java.util.Scanner;
+import modelo.ArbolBinarioBusqueda;
 import modelo.ListaGenerica;
 import modelo.Paquete;
 import negocio.Camion;
 import negocio.CentroDistribucion;
+import persistencia.PersistenciaDepositosJson;
 import persistencia.PersistenciaJson;
 
 public class Menu
@@ -14,13 +16,17 @@ public class Menu
     private ListaGenerica<Paquete<String>> paquetes;
     private Camion camion;
     private PersistenciaJson persistencia;
+    private PersistenciaDepositosJson persistenciaDepositos;
+    private ArbolBinarioBusqueda arbolDepositos;
     private CentroDistribucion centroDistribucion;
 
     public Menu()
     {
         teclado = new Scanner(System.in);
         persistencia = new PersistenciaJson("inventario.json");
+        persistenciaDepositos = new PersistenciaDepositosJson("depositos.json");
         paquetes = new ListaGenerica<>();
+        arbolDepositos = new ArbolBinarioBusqueda();
         centroDistribucion = new CentroDistribucion();
     }
 
@@ -41,6 +47,7 @@ public class Menu
                 case 3 -> verProximoPaquete();
                 case 4 -> listarPaquetesCargados();
                 case 5 -> listarPaquetesDelCamion();
+                case 6 -> auditarDepositos();
                 case 0 -> System.out.println("Programa finalizado");
                 default -> System.out.println("Opcion incorrecta");
             }
@@ -62,6 +69,17 @@ public class Menu
             camion = new Camion(100);
             System.out.println("No se pudo leer inventario.json");
         }
+
+        try
+        {
+            arbolDepositos = persistenciaDepositos.cargar();
+            System.out.println("Depositos cargados desde el JSON: "
+                    + arbolDepositos.obtenerEnOrden().size());
+        }
+        catch (IOException e)
+        {
+            System.out.println("No se pudo leer depositos.json");
+        }
     }
 
     private void mostrarOpciones()
@@ -72,6 +90,7 @@ public class Menu
         System.out.println("3. Ver proximo paquete a descargar");
         System.out.println("4. Listar paquetes cargados");
         System.out.println("5. Listar paquetes dentro del camion");
+        System.out.println("6. Auditar depositos y mostrar niveles");
         System.out.println("0. Salir");
     }
 
@@ -157,6 +176,22 @@ public class Menu
         for (int i = ordenados.cantidad() - 1; i >= 0; i--)
         {
             camion.cargar(ordenados.obtener(i));
+        }
+    }
+
+    private void auditarDepositos()
+    {
+        arbolDepositos.auditar();
+        arbolDepositos.imprimirPorNiveles();
+
+        try
+        {
+            persistenciaDepositos.guardar(arbolDepositos);
+            System.out.println("Auditoria de depositos guardada");
+        }
+        catch (IOException e)
+        {
+            System.out.println("No se pudo actualizar depositos.json");
         }
     }
 
