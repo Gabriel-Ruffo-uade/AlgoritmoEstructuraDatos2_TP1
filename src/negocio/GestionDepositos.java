@@ -1,7 +1,9 @@
 package negocio;
 
 import java.io.IOException;
+import java.util.List;
 import modelo.ArbolBinarioBusqueda;
+import modelo.Deposito;
 import persistencia.PersistenciaDepositosJson;
 
 public class GestionDepositos
@@ -34,5 +36,10 @@ public class GestionDepositos
     public void guardar() throws IOException
     {
         persistencia.guardar(arbol);
+    }
+
+    public List<Deposito> obtenerDepositos()
+    {
+        return arbol.obtenerEnOrden();
     }
 }

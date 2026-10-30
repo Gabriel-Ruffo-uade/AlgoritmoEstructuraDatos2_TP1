@@ -23,6 +23,14 @@ A. Red de Depósitos (ABB Manual)
         • Requerimiento técnico: implementar un método de Auditoría que recorra el árbol (post-orden) y marque como "visitados" solo aquellos depósitos que no han sido auditados en los últimos 30 días.
         • Reporte por niveles: el sistema debe imprimir qué depósitos se encuentran en el "Nivel N" del árbol para coordinar inspecciones regionales. 
 
+# Iteración 3: Optimización de Rutas (Grafos)
+
+A. Hoja de Ruta (Grafos)
+Los depósitos están conectados por rutas con una distancia específica.
+        • Estructura: modelar la red como un Grafo (Matriz o Lista de Adyacencia), integrando los nodos
+        definidos en la Iteración 2.
+        • Cálculo de distancia: implementar un algoritmo (BFS para saltos) que
+        encuentre la distancia mínima entre dos depósitos para optimizar el combustible. 
 
 # Anexo: Estructura JSON sugerida
 inventario.json (Iteración 1):

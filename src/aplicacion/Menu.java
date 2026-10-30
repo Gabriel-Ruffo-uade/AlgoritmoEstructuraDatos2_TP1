@@ -1,12 +1,17 @@
 package aplicacion;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 import modelo.ListaGenerica;
 import modelo.Paquete;
+import modelo.Deposito;
+import modelo.ResultadoRuta;
 import negocio.Camion;
 import negocio.CentroDistribucion;
 import negocio.GestionDepositos;
+import negocio.GestionRutas;
 import persistencia.PersistenciaDepositosJson;
 import persistencia.PersistenciaJson;
 
@@ -17,6 +22,7 @@ public class Menu
     private Camion camion;
     private PersistenciaJson persistencia;
     private GestionDepositos gestionDepositos;
+    private GestionRutas gestionRutas;
     private CentroDistribucion centroDistribucion;
 
     public Menu()
@@ -24,9 +30,23 @@ public class Menu
         teclado = new Scanner(System.in);
         persistencia = new PersistenciaJson("inventario.json");
         gestionDepositos = new GestionDepositos(
-            new PersistenciaDepositosJson("depositos.json"));
+            new PersistenciaDepositosJson(obtenerRutaDepositos()));
+        gestionRutas = new GestionRutas(gestionDepositos);
         paquetes = new ListaGenerica<>();
         centroDistribucion = new CentroDistribucion();
+    }
+
+    private String obtenerRutaDepositos()
+    {
+        Path rutaDentroDelProyecto = Path.of(
+                "AlgoritmoEstructuraDatos2_TP1", "depositos.json");
+
+        if (Files.exists(rutaDentroDelProyecto))
+        {
+            return rutaDentroDelProyecto.toString();
+        }
+
+        return "depositos.json";
     }
 
     public void iniciar()
@@ -47,6 +67,7 @@ public class Menu
                 case 4 -> listarPaquetesCargados();
                 case 5 -> listarPaquetesDelCamion();
                 case 6 -> auditarDepositos();
+                case 7 -> buscarRuta();
                 case 0 -> System.out.println("Programa finalizado");
                 default -> System.out.println("Opcion incorrecta");
             }
@@ -90,6 +111,7 @@ public class Menu
         System.out.println("4. Listar paquetes cargados");
         System.out.println("5. Listar paquetes dentro del camion");
         System.out.println("6. Auditar depositos y mostrar niveles");
+        System.out.println("7. Buscar ruta con menor cantidad de saltos");
         System.out.println("0. Salir");
     }
 
@@ -190,6 +212,33 @@ public class Menu
         {
             System.out.println("No se pudo actualizar depositos.json");
         }
+    }
+
+    private void buscarRuta()
+    {
+        int idOrigen = leerEntero("ID del deposito de origen: ");
+        int idDestino = leerEntero("ID del deposito de destino: ");
+        ResultadoRuta resultado =
+                gestionRutas.buscarRutaConMenosSaltos(idOrigen, idDestino);
+
+        if (!resultado.isEncontrada())
+        {
+            System.out.println(resultado.getMensaje());
+            return;
+        }
+
+        System.out.println("Ruta encontrada:");
+
+        for (int i = 0; i < resultado.getRecorrido().cantidad(); i++)
+        {
+            Deposito deposito = resultado.getRecorrido().obtener(i);
+            System.out.println(deposito.getId() + " - " + deposito.getNombre());
+        }
+
+        System.out.println("Cantidad de saltos: " + resultado.getCantidadSaltos());
+        System.out.println("Distancia de esta ruta: "
+                + resultado.getDistanciaTotal() + " km");
+        System.out.println("La ruta fue elegida por cantidad de saltos, no por kilometros");
     }
 
     private void eliminarPaqueteDeLaLista(long id)

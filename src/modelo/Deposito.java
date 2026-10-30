@@ -12,6 +12,7 @@ public class Deposito
     private boolean auditado;
     private boolean visitado;
     private LocalDateTime fechaUltimaAuditoria;
+    private ListaGenerica<Conexion> conexiones;
 
     public Deposito(int id, String nombre, boolean auditado,
                     LocalDateTime fechaUltimaAuditoria)
@@ -20,6 +21,7 @@ public class Deposito
         this.nombre = nombre;
         this.auditado = auditado;
         this.fechaUltimaAuditoria = fechaUltimaAuditoria;
+        conexiones = new ListaGenerica<>();
     }
 
     public int getId()
@@ -55,6 +57,16 @@ public class Deposito
     public LocalDateTime getFechaUltimaAuditoria()
     {
         return fechaUltimaAuditoria;
+    }
+
+    public ListaGenerica<Conexion> getConexiones()
+    {
+        return conexiones;
+    }
+
+    public void agregarConexion(Conexion conexion)
+    {
+        conexiones.agregar(conexion);
     }
 
     int getAltura()

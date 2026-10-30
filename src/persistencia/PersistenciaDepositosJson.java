@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import modelo.ArbolBinarioBusqueda;
+import modelo.Conexion;
 import modelo.Deposito;
 
 public class PersistenciaDepositosJson
@@ -27,25 +28,41 @@ public class PersistenciaDepositosJson
             return arbol;
 
         String json = Files.readString(archivo);
-        Pattern patron = Pattern.compile(
+        Pattern patronDeposito = Pattern.compile(
                 "\\{\\s*\"id\"\\s*:\\s*(\\d+)\\s*,\\s*"
                 + "\"nombre\"\\s*:\\s*\"([^\"]+)\"\\s*,\\s*"
                 + "\"auditado\"\\s*:\\s*(true|false)\\s*,\\s*"
-                + "\"fechaUltimaAuditoria\"\\s*:\\s*(null|\"[^\"]+\")\\s*\\}"
+                + "\"fechaUltimaAuditoria\"\\s*:\\s*(null|\"[^\"]+\")\\s*,\\s*"
+                + "\"conexiones\"\\s*:\\s*\\[(.*?)\\]\\s*\\}",
+                Pattern.DOTALL
+        );
+        Pattern patronConexion = Pattern.compile(
+                "\\{\\s*\"id\"\\s*:\\s*(\\d+)\\s*,\\s*"
+                + "\"distancia\"\\s*:\\s*([\\d.]+)\\s*\\}"
         );
 
-        Matcher coincidencia = patron.matcher(json);
-        while (coincidencia.find())
+        Matcher coincidenciaDeposito = patronDeposito.matcher(json);
+        while (coincidenciaDeposito.find())
         {
-            int id = Integer.parseInt(coincidencia.group(1));
-            String nombre = coincidencia.group(2);
-            boolean auditado = Boolean.parseBoolean(coincidencia.group(3));
-            String fechaTexto = coincidencia.group(4);
+            int id = Integer.parseInt(coincidenciaDeposito.group(1));
+            String nombre = coincidenciaDeposito.group(2);
+            boolean auditado = Boolean.parseBoolean(coincidenciaDeposito.group(3));
+            String fechaTexto = coincidenciaDeposito.group(4);
             LocalDateTime fecha = fechaTexto.equals("null")
                     ? null
                     : LocalDateTime.parse(fechaTexto.substring(1, fechaTexto.length() - 1));
 
-            arbol.insertar(new Deposito(id, nombre, auditado, fecha));
+            Deposito deposito = new Deposito(id, nombre, auditado, fecha);
+            Matcher coincidenciaConexion = patronConexion.matcher(coincidenciaDeposito.group(5));
+
+            while (coincidenciaConexion.find())
+            {
+                int idDestino = Integer.parseInt(coincidenciaConexion.group(1));
+                double distancia = Double.parseDouble(coincidenciaConexion.group(2));
+                deposito.agregarConexion(new Conexion(idDestino, distancia));
+            }
+
+            arbol.insertar(deposito);
         }
 
         return arbol;
@@ -70,7 +87,20 @@ public class PersistenciaDepositosJson
             else
                 json.append("\"").append(deposito.getFechaUltimaAuditoria()).append("\"");
 
-            json.append(" }");
+            json.append(", \"conexiones\": [");
+
+            for (int j = 0; j < deposito.getConexiones().cantidad(); j++)
+            {
+                Conexion conexion = deposito.getConexiones().obtener(j);
+                json.append("{ \"id\": ").append(conexion.getIdDepositoDestino())
+                        .append(", \"distancia\": ").append(conexion.getDistancia())
+                        .append(" }");
+
+                if (j < deposito.getConexiones().cantidad() - 1)
+                    json.append(", ");
+            }
+
+            json.append("] }");
 
             if (i < depositos.size() - 1)
                 json.append(",");
